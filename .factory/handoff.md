@@ -84,7 +84,7 @@ browser run recorded both a practice win and three-wrong-answer daily loss.
 The source and handoff commits were pushed to `origin/main` successfully. The
 implementation SHA is `194ce19f2371a007de986396c858fbcf6c9ed3a7`; the pushed
 handoff SHA before this report-only update was
-`590b61e4cf39bfed707a46bf1c9023e80a6e9d10`.
+`590b61e0ebff6c1114a4f0991b57a133c474e141`.
 
 Two HTTPS cold checks on 2026-09-05 returned DNS resolution failure for
 `practice-after-daily.sociobot.in`. The GitHub Actions API reported zero workflow
