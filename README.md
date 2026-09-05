@@ -14,8 +14,9 @@ sample run. Demo data uses a separate browser-storage namespace. Use **Reset
 demo** to clear only sample progress.
 
 The game is fictional. It does not give biology, health, or scientific advice.
-Game progress and settings stay in browser storage. No account or payment is
-required. It works offline after the first service-worker-controlled visit.
+Game progress and settings stay in browser storage. During a game, the app
+requests only its static files from this product origin. No account or payment
+is required. It works offline after the first service-worker-controlled visit.
 
 ## Run locally
 
@@ -35,7 +36,7 @@ directory. The build copies the durable Static Web Apps configuration into
 ```sh
 npm test
 npm run build
-npm run preview -- --host 127.0.0.1 --port 4173
+npm run preview
 ./verify-url.sh http://127.0.0.1:4173/
 ```
 

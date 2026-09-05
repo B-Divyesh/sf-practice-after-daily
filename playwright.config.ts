@@ -16,7 +16,7 @@ export default defineConfig({
     { name: 'phone', use: { ...devices['Pixel 5'] } },
   ],
   webServer: {
-    command: 'npm run build && npm run preview -- --host 127.0.0.1 --port 4173',
+    command: 'npm run build && node scripts/static-server.mjs',
     port: 4173,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

@@ -27,7 +27,6 @@ let renderRequested = false;
 let simulationFrame = 0;
 let lastTick = performance.now();
 let simulatedTime = 0;
-let settingsReturnFocus: HTMLElement | null = null;
 
 function storageKey(key: string): string { return `${storagePrefix}${key}`; }
 function load<T>(key: string, fallback: T): T {
@@ -44,17 +43,37 @@ function makeRun(mode: Mode, seed: string): Run {
 }
 function currentTarget(): Habitat { return targetFor(run.seed); }
 function maxGuesses(): number { return run.mode === 'practice' || settings.assist ? 5 : 3; }
-function route(): 'home' | 'privacy' | 'terms' | 'not-found' {
+function route(): 'home' | 'demo' | 'privacy' | 'terms' | 'not-found' {
+  if (window.location.pathname === '/demo') return 'demo';
   if (window.location.pathname === '/privacy') return 'privacy';
   if (window.location.pathname === '/terms') return 'terms';
   if (window.location.pathname === '/404' || window.location.pathname === '/404.html') return 'not-found';
   return 'home';
 }
 function titleFor(currentRoute: ReturnType<typeof route>): string {
+  if (currentRoute === 'demo') return 'Demo — Practice After Daily';
   if (currentRoute === 'privacy') return 'Privacy — Practice After Daily';
   if (currentRoute === 'terms') return 'Terms — Practice After Daily';
   if (currentRoute === 'not-found') return 'Page not found — Practice After Daily';
   return 'Practice After Daily — Practise a habitat puzzle';
+}
+function metadataFor(currentRoute: ReturnType<typeof route>): { path: string; description: string } {
+  if (currentRoute === 'demo') return { path: '/demo', description: 'Try a labelled sample Signal Garden practice run with hints.' };
+  if (currentRoute === 'privacy') return { path: '/privacy', description: 'Read how Practice After Daily keeps game progress in your browser.' };
+  if (currentRoute === 'terms') return { path: '/terms', description: 'Read the terms for the fictional Practice After Daily game.' };
+  if (currentRoute === 'not-found') return { path: '/404', description: 'This Practice After Daily page does not exist.' };
+  return { path: '/', description: 'Play a daily fictional habitat puzzle, then practise with hints at your own pace.' };
+}
+function updateMetadata(currentRoute: ReturnType<typeof route>): void {
+  const metadata = metadataFor(currentRoute);
+  const title = titleFor(currentRoute);
+  const canonical = `https://practice-after-daily.sociobot.in${metadata.path}`;
+  document.querySelector<HTMLLinkElement>('#canonical')?.setAttribute('href', canonical);
+  document.querySelector<HTMLMetaElement>('#page-description')?.setAttribute('content', metadata.description);
+  document.querySelector<HTMLMetaElement>('#og-title')?.setAttribute('content', title);
+  document.querySelector<HTMLMetaElement>('#og-description')?.setAttribute('content', metadata.description);
+  document.querySelector<HTMLMetaElement>('#twitter-title')?.setAttribute('content', title);
+  document.querySelector<HTMLMetaElement>('#twitter-description')?.setAttribute('content', metadata.description);
 }
 function requestRender(): void {
   if (!renderRequested) {
@@ -81,14 +100,14 @@ function pageShell(content: string, currentRoute: ReturnType<typeof route>): str
   const demoBanner = isDemo ? `
     <aside class="demo-banner" aria-label="Demo mode">
       <span><strong>Demo — sample data, nothing is saved.</strong> This run uses separate browser storage.</span>
-      <span class="demo-actions"><button class="text-button" data-action="reset-demo">Reset demo</button><a href="/">Start for real</a></span>
+      <span class="demo-actions"><button class="text-button" data-action="reset-demo">Reset demo</button><a data-action="start-real" href="/">Start for real</a></span>
     </aside>` : '';
   return `
     <header class="site-header">
       <a class="wordmark" href="${relativePath('/')}" aria-label="Practice After Daily home"><span aria-hidden="true" class="wordmark-mark">✦</span> Practice After Daily</a>
       <nav aria-label="Main navigation">
         <a ${currentRoute === 'home' ? 'aria-current="page"' : ''} href="${relativePath('/')}">Play</a>
-        <a href="/demo">Demo</a>
+        <a ${currentRoute === 'demo' ? 'aria-current="page"' : ''} href="/demo">Demo</a>
         <a ${currentRoute === 'privacy' ? 'aria-current="page"' : ''} href="/privacy">Privacy</a>
         <button class="nav-settings" data-action="open-settings" aria-haspopup="dialog">Settings</button>
       </nav>
@@ -120,7 +139,7 @@ function gameArt(target: Habitat): string {
     const width = index % 2 ? 12 : 18;
     return `<i style="--left:${left}%;--height:${height}%;--width:${width}px;--delay:${index * 80}ms"></i>`;
   }).join('');
-  return `<div class="garden-art" style="--garden-color:${target.color}" role="img" aria-label="An abstract garden mark for the ${target.name} habitat."><span class="moon"></span><span class="horizon"></span><span class="stems">${stems}</span></div>`;
+  return `<div class="garden-art" style="--garden-color:${target.color}" role="img" aria-label="Abstract garden mark for the current fictional habitat. It does not identify the answer."><span class="moon"></span><span class="horizon"></span><span class="stems">${stems}</span></div>`;
 }
 function feedbackBlock(target: Habitat): string {
   if (run.guesses.length === 0) return '<p class="feedback empty-feedback">Choose a habitat type. Each wrong answer compares its traits with the record.</p>';
@@ -268,11 +287,13 @@ function settingsDialog(): string {
 function render(): void {
   const currentRoute = route();
   document.title = titleFor(currentRoute);
+  updateMetadata(currentRoute);
   document.documentElement.dataset.theme = settings.theme;
-  const content = currentRoute === 'home' ? homePage() : currentRoute === 'privacy' ? legalPage('privacy') : currentRoute === 'terms' ? legalPage('terms') : notFoundPage();
+  document.documentElement.dataset.motion = settings.motion ? 'on' : 'off';
+  const content = currentRoute === 'home' || currentRoute === 'demo' ? homePage() : currentRoute === 'privacy' ? legalPage('privacy') : currentRoute === 'terms' ? legalPage('terms') : notFoundPage();
   app.innerHTML = pageShell(content, currentRoute);
   const announcement = document.querySelector('#route-announcement');
-  if (announcement) announcement.textContent = currentRoute === 'home' ? 'Game page loaded' : document.title;
+  if (announcement) announcement.textContent = currentRoute === 'home' || currentRoute === 'demo' ? 'Game page loaded' : document.title;
   if (settingsOpen) window.setTimeout(() => document.querySelector<HTMLElement>('.settings-dialog button')?.focus(), 0);
 }
 function showHint(): void {
@@ -314,11 +335,19 @@ function startRun(mode: Mode, seed: string): void {
   window.setTimeout(() => document.querySelector<HTMLElement>('#puzzle-title')?.focus(), 0);
 }
 function resetDemo(): void {
-  Object.keys(localStorage).filter((key) => key.startsWith('demo:signal-garden:')).forEach((key) => localStorage.removeItem(key));
+  clearDemoStorage();
   run = makeRun('practice', 'sample-garden');
   settings = { ...defaultSettings };
   practiceSeedText = 'sample-garden';
   persistRun(); save('settings', settings); requestRender();
+}
+function clearDemoStorage(): void {
+  Object.keys(localStorage).filter((key) => key.startsWith('demo:signal-garden:')).forEach((key) => localStorage.removeItem(key));
+}
+function closeSettings(): void {
+  settingsOpen = false;
+  requestRender();
+  window.setTimeout(() => document.querySelector<HTMLButtonElement>('[data-action="open-settings"]')?.focus(), 0);
 }
 function attachEvents(): void {
   document.addEventListener('click', (event) => {
@@ -330,13 +359,10 @@ function attachEvents(): void {
     if (action === 'restart') startRun(run.mode, run.seed);
     if (action === 'daily') startRun('daily', dailySeed());
     if (action === 'practice' && target.dataset.seed) startRun('practice', target.dataset.seed);
-    if (action === 'open-settings') { settingsReturnFocus = target; settingsOpen = true; requestRender(); }
-    if (action === 'close-settings') {
-      settingsOpen = false;
-      requestRender();
-      window.setTimeout(() => settingsReturnFocus?.focus(), 0);
-    }
+    if (action === 'open-settings') { settingsOpen = true; requestRender(); }
+    if (action === 'close-settings') closeSettings();
     if (action === 'reset-demo') resetDemo();
+    if (action === 'start-real') clearDemoStorage();
   });
   document.addEventListener('change', (event) => {
     const input = event.target as HTMLInputElement;
@@ -346,14 +372,14 @@ function attachEvents(): void {
     if (setting === 'assist') settings.assist = input.checked;
     if (setting === 'motion') settings.motion = input.checked;
     if (setting === 'sound') settings.sound = input.checked;
-    save('settings', settings); requestRender();
+    document.documentElement.dataset.theme = settings.theme;
+    document.documentElement.dataset.motion = settings.motion ? 'on' : 'off';
+    save('settings', settings);
   });
   document.addEventListener('keydown', (event) => {
     if (!settingsOpen) return;
     if (event.key === 'Escape') {
-      settingsOpen = false;
-      requestRender();
-      window.setTimeout(() => settingsReturnFocus?.focus(), 0);
+      closeSettings();
       return;
     }
     if (event.key !== 'Tab') return;

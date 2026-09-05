@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build && cp staticwebapp.config.json dist/staticwebapp.config.json",
-    "preview": "vite preview",
+    "preview": "node scripts/static-server.mjs",
     "test": "node scripts/test.mjs",
     "test:ui": "playwright test --ui"
   },
@@ -14,6 +14,6 @@
     "@axe-core/playwright": "4.11.0",
     "@playwright/test": "1.58.2",
     "typescript": "~5.9.3",
-    "vite": "~7.1.7"
+    "vite": "~7.3.6"
   }
 }

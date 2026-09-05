@@ -29,10 +29,10 @@
   },
   {
     "id": "settings-persist",
-    "claim": "Play settings persist in this browser.",
+    "claim": "Light background, assist, garden movement, and sound settings persist in this browser.",
     "where": "Settings dialog",
     "test": "npm test -- --grep @claim:settings-persist",
-    "sandbox": "Enable assist mode in a fresh /demo context, reload, and verify it remains enabled."
+    "sandbox": "Set every play setting in a fresh /demo context, reload, and verify each saved value."
   },
   {
     "id": "daily-and-practice-modes",
@@ -43,17 +43,24 @@
   },
   {
     "id": "optional-hints",
-    "claim": "Practice hints reveal more traits without costing a guess.",
+    "claim": "Practice gives exactly two optional hints that reveal more traits without costing a guess.",
     "where": "Field notes",
     "test": "npm test -- --grep @claim:optional-hints",
-    "sandbox": "Fresh /demo run; request a hint and verify the added trait and unchanged guess count."
+    "sandbox": "Fresh /demo run; request both hints, verify both added traits, no third hint action, and an unchanged guess count."
+  },
+  {
+    "id": "deterministic-seeds",
+    "claim": "The daily date and each named practice seed repeat the same habitat puzzle.",
+    "where": "README and puzzle goal",
+    "test": "npm test -- --grep @claim:deterministic-seeds",
+    "sandbox": "Fresh /demo context starts the date-based daily puzzle and a named practice seed, then reloads each and compares the shown seed and field notes."
   },
   {
     "id": "local-only-progress",
-    "claim": "Progress stays in this browser and no player data is sent off the product origin.",
+    "claim": "Progress stays in this browser; a demo game and legal pages request only static files from this product origin.",
     "where": "First-screen facts, privacy page, and game limits",
     "test": "npm test -- --grep @claim:local-only-progress",
-    "sandbox": "Record every request through a demo play, hint, and settings flow; only the product origin may receive requests."
+    "sandbox": "Record all requests through the daily game, demo play, hint, settings, privacy, and terms; requests must be GETs for known static product files only."
   },
   {
     "id": "offline-reload",
@@ -70,10 +77,10 @@
     "sandbox": "Measure requestAnimationFrame callbacks for one second in a fresh /demo page."
   },
   {
-    "id": "keyboard-and-touch-controls",
-    "claim": "Keyboard and touch controls activate habitat choices.",
+    "id": "keyboard-pointer-and-touch-controls",
+    "claim": "Keyboard, pointer, and touch controls activate habitat choices.",
     "where": "README",
-    "test": "npm test -- --grep @claim:keyboard-and-touch-controls",
-    "sandbox": "Desktop focuses a choice and presses Enter; the phone project taps a choice. Both must show feedback."
+    "test": "npm test -- --grep @claim:keyboard-pointer-and-touch-controls",
+    "sandbox": "Desktop clicks a choice then focuses another and presses Enter; the phone project taps a choice. Each action must show feedback."
   }
 ]
