@@ -128,6 +128,21 @@ test('@claim:daily-and-practice-modes offers both daily and no-pressure practice
   await expect(page.getByRole('button', { name: /Show a hint/ })).toBeVisible();
 });
 
+test('a corrected practice seed starts without reloading after a validation error', async ({ page }) => {
+  await page.goto('/demo');
+  const seedInput = page.getByLabel('Practice seed');
+  await seedInput.fill('!!!');
+  await page.getByRole('button', { name: 'Start practice' }).click();
+  expect(await seedInput.evaluate((input) => (input as HTMLInputElement).validity.valid)).toBeFalsy();
+  await expect(page.locator('.puzzle-goal')).toContainText('Seed: sample-garden.');
+
+  await seedInput.fill('abc');
+  expect(await seedInput.evaluate((input) => (input as HTMLInputElement).validity.valid)).toBeTruthy();
+  await page.getByRole('button', { name: 'Start practice' }).click();
+  await expect(page.locator('.puzzle-goal')).toContainText('Seed: abc.');
+  await expect(page.getByText('Practice run', { exact: true })).toBeVisible();
+});
+
 test('@claim:optional-hints reveal exactly two more traits without a guess', async ({ page }) => {
   await page.goto('/demo');
   await expect(page.getByText('Signal', { exact: true })).toHaveCount(0);
@@ -250,6 +265,19 @@ test('known routes have their own titles and canonical URLs', async ({ page, bas
   }
 });
 
+test('in-app route changes and Back move focus to the new page heading', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Privacy', exact: true }).first().click();
+  await expect(page).toHaveURL(/\/privacy$/);
+  await expect(page.getByRole('heading', { name: 'Privacy' })).toBeFocused();
+  await expect(page.locator('#route-announcement')).toHaveText('Privacy — Practice After Daily');
+
+  await page.goBack();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole('heading', { name: 'Classify today’s fictional habitat' })).toBeFocused();
+  await expect(page.locator('#route-announcement')).toHaveText('Game page loaded');
+});
+
 test('an unknown path responds with the designed HTTP 404 page', async ({ page }) => {
   const response = await page.goto('/definitely-missing-game-route');
   expect(response?.status()).toBe(404);
@@ -267,6 +295,40 @@ test('phone controls meet the 44 pixel target size', async ({ page }, testInfo) 
     expect(box!.width).toBeGreaterThanOrEqual(44);
     expect(box!.height).toBeGreaterThanOrEqual(44);
   }
+});
+
+test('the phone 404 skip link moves focus and every link is a 44 pixel target', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'phone', 'Touch targets are measured in the phone project.');
+  await page.goto('/definitely-missing-game-route');
+  const links = page.locator('a');
+  for (let index = 0; index < await links.count(); index += 1) {
+    const box = await links.nth(index).boundingBox();
+    expect(box, `missing 404 link target ${index}`).not.toBeNull();
+    expect(box!.width).toBeGreaterThanOrEqual(44);
+    expect(box!.height).toBeGreaterThanOrEqual(44);
+  }
+  const skip = page.getByRole('link', { name: 'Skip to page content' });
+  await skip.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('main')).toBeFocused();
+});
+
+test('the phone layout has no horizontal overflow at 200 percent text size', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'phone', 'Text resize is measured in the phone project.');
+  await page.goto('/');
+  await page.evaluate(() => { document.documentElement.style.fontSize = '32px'; });
+  const layout = await page.evaluate(() => {
+    const settingsButton = document.querySelector('.nav-settings')!.getBoundingClientRect();
+    return {
+      viewportWidth: window.innerWidth,
+      documentWidth: document.documentElement.scrollWidth,
+      settingsLeft: settingsButton.left,
+      settingsRight: settingsButton.right,
+    };
+  });
+  expect(layout.documentWidth).toBeLessThanOrEqual(layout.viewportWidth);
+  expect(layout.settingsLeft).toBeGreaterThanOrEqual(0);
+  expect(layout.settingsRight).toBeLessThanOrEqual(layout.viewportWidth);
 });
 
 test('route titles and the designed 404 page work', async ({ page }) => {

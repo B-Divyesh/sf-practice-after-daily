@@ -119,7 +119,6 @@ function pageShell(content: string, currentRoute: ReturnType<typeof route>): str
       <p><a href="/privacy">Privacy</a> <a href="/terms">Terms</a> <span>Built by Param Factory</span> <span>v1.0.0</span></p>
       <p class="generated-note">The garden marks are hand-drawn SVG and CSS shapes, not real biology.</p>
     </footer>
-    <p class="sr-only" id="route-announcement" aria-live="polite"></p>
     ${settingsOpen ? settingsDialog() : ''}`;
 }
 function traitRows(target: Habitat): string {
@@ -351,6 +350,17 @@ function closeSettings(): void {
 }
 function attachEvents(): void {
   document.addEventListener('click', (event) => {
+    const link = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[href]');
+    if (link && !isDemo && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey && !link.target && !link.hasAttribute('download')) {
+      const destination = new URL(link.href, window.location.href);
+      const clientRoutes = ['/', '/privacy', '/terms'];
+      const changesRoute = destination.pathname !== window.location.pathname || destination.search !== window.location.search;
+      if (destination.origin === window.location.origin && clientRoutes.includes(destination.pathname) && changesRoute) {
+        event.preventDefault();
+        navigate(`${destination.pathname}${destination.search}${destination.hash}`);
+        return;
+      }
+    }
     const target = (event.target as HTMLElement).closest<HTMLElement>('[data-action]');
     if (!target) return;
     const action = target.dataset.action;
@@ -406,6 +416,10 @@ function attachEvents(): void {
     input.setCustomValidity('');
     practiceSeedText = seed;
     startRun('practice', seed);
+  });
+  document.addEventListener('input', (event) => {
+    const input = event.target as HTMLInputElement;
+    if (input.name === 'practice-seed') input.setCustomValidity('');
   });
   window.addEventListener('popstate', () => { render(); window.setTimeout(() => document.querySelector<HTMLElement>('h1')?.focus(), 0); });
   document.addEventListener('visibilitychange', () => { lastTick = performance.now(); });
