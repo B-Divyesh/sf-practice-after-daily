@@ -49,6 +49,9 @@ Every command in `.factory/claims.json` was also run independently and passed.
 The offline command uses an isolated phone browser context, visits `/demo`,
 waits for cached assets, sets the context offline, and reloads the game.
 
+A fresh depth-one checkout was then installed with `npm ci`. Every declared
+claim command and `npm run build` passed again from that clean checkout.
+
 The final production build contains 25.59 KB JavaScript (9.30 KB gzip) and
 18.51 KB CSS (4.74 KB gzip). `dist/` is produced by `npm run build` and includes
 `staticwebapp.config.json`.
