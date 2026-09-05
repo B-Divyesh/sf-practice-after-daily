@@ -1,0 +1,32 @@
+{
+  "slug": "practice-after-daily",
+  "title": "Practice After Daily",
+  "territory": "games-creative",
+  "user": "Special-interest daily-puzzle players who want the shared daily challenge but also a no-pressure practice run that teaches the domain after they finish.",
+  "evidence": [
+    {
+      "url": "https://hn.algolia.com/api/v1/items/46363870",
+      "date": "2025-12-23",
+      "quote_or_summary": "GeneGuessr\u2019s creator explains that practice mode unlocks after the daily puzzle; a commenter asks how to enable it and whether it offers more hints and guesses for newcomers."
+    },
+    {
+      "url": "https://geneguessr.brinedew.bio/",
+      "date": "2026-09-01 (accessed)",
+      "quote_or_summary": "GeneGuessr is a live daily protein-guessing web game, validating a niche-knowledge daily format and revealing the discoverability cost of hidden practice."
+    }
+  ],
+  "recurrence": "The maker built practice because a daily-only puzzle excludes learning; a separate player immediately needed clearer access and gentler rules.",
+  "current_workaround": "Google explanations, wait for another daily, or give up after an opaque specialized puzzle.",
+  "incumbents_and_gap": "GeneGuessr and subject-specific daily puzzles prove that a domain can sustain a ritual, but practice is often secondary or locked behind the main solve.",
+  "smallest_useful_product": "A daily 'Signal Garden' classification puzzle: infer a fictional ecosystem from compact traits, receive semantic feedback, then choose an openly visible practice seed with optional hints and a short explanation. Non-goals: real biology claims, scraped datasets, classroom dashboards, or LLM answers.",
+  "success_measure": "At least 30% of daily starters use practice, and practice users have a 20-point higher next-day completion rate than non-practice users.",
+  "artifact_class": "browser-game",
+  "monetization": "free \u2014 educational clarity and sharing matter more than gating hints; a donation link is sufficient for v1.",
+  "constraints": "Use fictional/generated taxonomy to avoid misinformation; show accessible explanations; local anonymous progress only; no health or scientific advice.",
+  "est_build_effort": "S",
+  "scale": "small (default)",
+  "why_distinct": "The practice loop is visible from the start and is part of the game\u2019s learning design, not a buried consolation mode.",
+  "confidence": 3,
+  "state": "RESEARCHED",
+  "research_run": "research-browser-games-0901-204259-0"
+}
