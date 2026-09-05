@@ -1,5 +1,24 @@
 # Handoff — Practice After Daily
 
+## Independent verification 1 — FAIL
+
+Independent QA reviewed implementation
+`194ce19f2371a007de986396c858fbcf6c9ed3a7` against documentation baseline
+`443576f09dd9001b37e77079e2c8570e5d8cdae5`. The live site now resolves, and
+its principal static files match the clean candidate build byte for byte.
+
+The verdict is **FAIL: 14 findings and 5 untested public claims**. Major issues
+are an accessible name that reveals the hidden answer, lost focus after closing
+Settings, an ineffective movement setting, and unknown URLs returning the game
+with HTTP 200 instead of the designed 404. Minor findings cover demo cleanup,
+phone target sizes, route title/canonical metadata, a vulnerable development
+dependency, and five gaps in declared claim coverage.
+
+All 11 declared claim commands exited 0 from a fresh clone. The complete suite
+passed 25 checks, the production build passed, the live win and loss paths were
+recorded, live offline reload worked, and the phone browser measured 61.0 FPS.
+See `.factory/verification-1.md` for exact evidence and remediation details.
+
 ## Release
 
 Practice After Daily is a static Vite and TypeScript browser game. The active
@@ -10,9 +29,9 @@ two optional hints.
 
 Implementation SHA: `194ce19f2371a007de986396c858fbcf6c9ed3a7`.
 
-Documentation verification SHA: `bea6f046349a2d390bc80aa8e6afba1faaacc1fd`.
-This later handoff-report commit is documentation-only and does not change the
-implementation image.
+Documentation baseline SHA: `443576f09dd9001b37e77079e2c8570e5d8cdae5`.
+This and the later verification-report commit are documentation-only and do not
+change the implementation image.
 
 ## What changed
 
@@ -79,20 +98,14 @@ browser run recorded both a practice win and three-wrong-answer daily loss.
   would need explicit future product approval.
 - The frame-rate claim is measured in the verification browsers, not on a named
   physical mid-range phone.
-- Factory deployment configuration and DNS are still required for the public
-  hostname. No infrastructure change was made from this product repository.
+- The hostname and deployment now work. Unknown live URLs still return the game
+  with HTTP 200 instead of the designed 404; see verification finding 4.
 
 ## Deployment check
 
-The source and handoff commits were pushed to `origin/main` successfully. The
-implementation SHA is `194ce19f2371a007de986396c858fbcf6c9ed3a7`; the pushed
-handoff SHA before this report-only update was
-`590b61e0ebff6c1114a4f0991b57a133c474e141`.
-
-Two HTTPS cold checks on 2026-09-05 returned DNS resolution failure for
-`practice-after-daily.sociobot.in`. The GitHub Actions API reported zero workflow
-runs for this repository. There is no deployment workflow or durable static-host
-configuration in the repository beyond the checked-in Static Web Apps runtime
-configuration, so deployment could not be completed without factory-owned
-infrastructure authority. This is an external deployment blocker, not a product
-build failure.
+The implementation and documentation baseline were pushed to `origin/main`.
+On 2026-09-05, fresh DNS, HTTPS, desktop-browser, and phone-browser checks all
+reached the live product. Its principal files hash-match the clean build. The
+GitHub Actions API still reports zero workflows and zero runs, so the successful
+deployment came from outside this repository's Actions configuration. No
+infrastructure was changed during verification.
