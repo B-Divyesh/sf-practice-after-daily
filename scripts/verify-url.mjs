@@ -10,7 +10,7 @@ const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage();
 const errors = [];
 page.on('console', (message) => {
-  const isExpectedNotFound = expectedStatus === 404 && message.text() === 'Failed to load resource: the server responded with a status of 404 (Not Found)';
+  const isExpectedNotFound = expectedStatus === 404 && message.text().startsWith('Failed to load resource: the server responded with a status of 404');
   if (message.type() === 'error' && !isExpectedNotFound) errors.push(message.text());
 });
 page.on('pageerror', (error) => errors.push(error.message));
