@@ -10,8 +10,9 @@ two optional hints.
 
 Implementation SHA: `194ce19f2371a007de986396c858fbcf6c9ed3a7`.
 
-Documentation verification SHA: recorded by the subsequent report-only handoff
-commit; it intentionally differs from the implementation SHA.
+Documentation verification SHA: `bea6f046349a2d390bc80aa8e6afba1faaacc1fd`.
+This later handoff-report commit is documentation-only and does not change the
+implementation image.
 
 ## What changed
 
