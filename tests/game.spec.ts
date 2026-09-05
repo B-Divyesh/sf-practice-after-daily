@@ -319,16 +319,19 @@ test('the phone layout has no horizontal overflow at 200 percent text size', asy
   await page.evaluate(() => { document.documentElement.style.fontSize = '32px'; });
   const layout = await page.evaluate(() => {
     const settingsButton = document.querySelector('.nav-settings')!.getBoundingClientRect();
+    const wordmark = document.querySelector<HTMLElement>('.wordmark')!;
     return {
       viewportWidth: window.innerWidth,
       documentWidth: document.documentElement.scrollWidth,
       settingsLeft: settingsButton.left,
       settingsRight: settingsButton.right,
+      fullWordmarkVisible: wordmark.scrollWidth <= wordmark.clientWidth,
     };
   });
   expect(layout.documentWidth).toBeLessThanOrEqual(layout.viewportWidth);
   expect(layout.settingsLeft).toBeGreaterThanOrEqual(0);
   expect(layout.settingsRight).toBeLessThanOrEqual(layout.viewportWidth);
+  expect(layout.fullWordmarkVisible).toBeTruthy();
 });
 
 test('route titles and the designed 404 page work', async ({ page }) => {

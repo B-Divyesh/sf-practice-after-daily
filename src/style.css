@@ -230,7 +230,7 @@ h3 { margin: 0; font-size: 1rem; letter-spacing: -.01em; }
 }
 @media (max-width: 430px) {
   .site-header { flex-wrap: wrap; padding-block: 7px; }
-  .wordmark { max-width: 154px; overflow: hidden; text-overflow: ellipsis; }
+  .wordmark { max-width: 100%; }
   nav { max-width: 100%; flex-wrap: wrap; }
   nav a, .nav-settings { padding-inline: 5px; font-size: .73rem; }
   .start-actions { align-items: stretch; }
