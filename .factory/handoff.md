@@ -76,9 +76,20 @@ browser run recorded both a practice win and three-wrong-answer daily loss.
   would need explicit future product approval.
 - The frame-rate claim is measured in the verification browsers, not on a named
   physical mid-range phone.
-- After the release commit is pushed, check the HTTPS cold load and record its
-  result below without changing product behavior.
+- Factory deployment configuration and DNS are still required for the public
+  hostname. No infrastructure change was made from this product repository.
 
 ## Deployment check
 
-Pending push and factory static deployment at the time this handoff was written.
+The source and handoff commits were pushed to `origin/main` successfully. The
+implementation SHA is `194ce19f2371a007de986396c858fbcf6c9ed3a7`; the pushed
+handoff SHA before this report-only update was
+`590b61e4cf39bfed707a46bf1c9023e80a6e9d10`.
+
+Two HTTPS cold checks on 2026-09-05 returned DNS resolution failure for
+`practice-after-daily.sociobot.in`. The GitHub Actions API reported zero workflow
+runs for this repository. There is no deployment workflow or durable static-host
+configuration in the repository beyond the checked-in Static Web Apps runtime
+configuration, so deployment could not be completed without factory-owned
+infrastructure authority. This is an external deployment blocker, not a product
+build failure.
