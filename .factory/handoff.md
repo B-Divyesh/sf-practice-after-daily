@@ -7,8 +7,10 @@
 Implementation SHA:
 `4a66e31b058690da9f48511db9d9c546dba143d9`.
 
-The documentation verification SHA is recorded by the following report-only
-commit. The deployed product bundle comes from the implementation SHA above.
+Documentation verification SHA:
+`8efaf1c0581fc5ee9a4709474ae6a363290a30e1`.
+The following report-only commit changes only this SHA note. The deployed
+product bundle comes from the implementation SHA above.
 
 The live product is <https://practice-after-daily.sociobot.in>.
 
