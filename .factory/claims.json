@@ -1,0 +1,79 @@
+[
+  {
+    "id": "demo-sandbox",
+    "claim": "Try it with sample data starts a labelled sample run in separate local storage and can be reset.",
+    "where": "First-screen action and demo banner",
+    "test": "npm test -- --grep @claim:demo-sandbox",
+    "sandbox": "Fresh browser context at /demo; complete a sample run, reset it, and inspect local storage namespaces."
+  },
+  {
+    "id": "free-first-release",
+    "claim": "The daily game starts immediately without an account or payment.",
+    "where": "First-screen facts and README",
+    "test": "npm test -- --grep @claim:free-first-release",
+    "sandbox": "Fresh context starts the daily game and makes a choice without entering account or payment details."
+  },
+  {
+    "id": "reaches-end-screen",
+    "claim": "A practice run reaches a real win end screen.",
+    "where": "Game end screen",
+    "test": "npm test -- --grep @claim:reaches-end-screen",
+    "sandbox": "Fresh /demo run; choose all available deterministic options until the correct answer ends the run."
+  },
+  {
+    "id": "restart-resets-state",
+    "claim": "Restart this run restores all choices and guesses.",
+    "where": "Game end screen",
+    "test": "npm test -- --grep @claim:restart-resets-state",
+    "sandbox": "Complete a /demo run; restart and verify five fresh practice choices and five guesses remain."
+  },
+  {
+    "id": "settings-persist",
+    "claim": "Play settings persist in this browser.",
+    "where": "Settings dialog",
+    "test": "npm test -- --grep @claim:settings-persist",
+    "sandbox": "Enable assist mode in a fresh /demo context, reload, and verify it remains enabled."
+  },
+  {
+    "id": "daily-and-practice-modes",
+    "claim": "The game has a date-based daily puzzle and open practice with five guesses.",
+    "where": "First screen and practice section",
+    "test": "npm test -- --grep @claim:daily-and-practice-modes",
+    "sandbox": "Fresh context opens daily mode, then starts a named practice seed and observes its five-guess state."
+  },
+  {
+    "id": "optional-hints",
+    "claim": "Practice hints reveal more traits without costing a guess.",
+    "where": "Field notes",
+    "test": "npm test -- --grep @claim:optional-hints",
+    "sandbox": "Fresh /demo run; request a hint and verify the added trait and unchanged guess count."
+  },
+  {
+    "id": "local-only-progress",
+    "claim": "Progress stays in this browser and no player data is sent off the product origin.",
+    "where": "First-screen facts, privacy page, and game limits",
+    "test": "npm test -- --grep @claim:local-only-progress",
+    "sandbox": "Record every request through a demo play, hint, and settings flow; only the product origin may receive requests."
+  },
+  {
+    "id": "offline-reload",
+    "claim": "Works offline after the first visit.",
+    "where": "README and service worker behavior",
+    "test": "npm test -- --grep @claim:offline-reload",
+    "sandbox": "A new browser context visits /demo, waits for service worker control, goes offline, and reloads the game."
+  },
+  {
+    "id": "60fps-visual-loop",
+    "claim": "The noninteractive visual update loop measures at least 55 FPS in the verification browser.",
+    "where": ".factory/handoff.md",
+    "test": "npm test -- --grep @claim:60fps-visual-loop",
+    "sandbox": "Measure requestAnimationFrame callbacks for one second in a fresh /demo page."
+  },
+  {
+    "id": "keyboard-and-touch-controls",
+    "claim": "Keyboard and touch controls activate habitat choices.",
+    "where": "README",
+    "test": "npm test -- --grep @claim:keyboard-and-touch-controls",
+    "sandbox": "Desktop focuses a choice and presses Enter; the phone project taps a choice. Both must show feedback."
+  }
+]

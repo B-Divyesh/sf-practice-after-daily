@@ -1,0 +1,12 @@
+{
+  "name": "Practice After Daily",
+  "short_name": "Practice Daily",
+  "description": "A daily fictional habitat puzzle with open practice runs.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#102a2a",
+  "theme_color": "#102a2a",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
