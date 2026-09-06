@@ -69,6 +69,19 @@ test('@claim:free-first-release starts the daily game without setup', async ({ p
   await expect(page.locator('.feedback, .end-screen')).toBeVisible();
 });
 
+test('@claim:daily-round-duration reaches a daily end screen in two minutes or less', async ({ page }) => {
+  const answerName = targetFor(dailySeed()).name;
+  await page.goto('/');
+  await expect(page.getByRole('heading', { name: 'Classify this fictional habitat' })).toBeVisible();
+  const startedAt = await page.evaluate(() => performance.now());
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    await page.locator('button[data-action="guess"]:not([disabled])').filter({ hasNotText: answerName }).first().click();
+  }
+  await expect(page.getByRole('heading', { name: 'No guesses left' })).toBeVisible();
+  const elapsedMilliseconds = (await page.evaluate(() => performance.now())) - startedAt;
+  expect(elapsedMilliseconds).toBeLessThanOrEqual(120_000);
+});
+
 test('@claim:reaches-end-screen completes a deterministic practice run', async ({ page }) => {
   await page.goto('/demo');
   await finishPracticeRun(page);

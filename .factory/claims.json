@@ -14,6 +14,13 @@
     "sandbox": "Fresh context starts the daily game and makes a choice without entering account or payment details."
   },
   {
+    "id": "daily-round-duration",
+    "claim": "A daily round can reach its win or loss screen in two minutes or less.",
+    "where": "README",
+    "test": "npm test -- --grep @claim:daily-round-duration",
+    "sandbox": "Fresh daily context makes three deterministic choices and measures the elapsed active-game time through the loss end screen."
+  },
+  {
     "id": "reaches-end-screen",
     "claim": "A practice run reaches a real win end screen.",
     "where": "Game end screen",
