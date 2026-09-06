@@ -1,8 +1,8 @@
 # Practice After Daily
 
 Practice After Daily is a free browser game for daily-puzzle players. Classify a
-fictional habitat in a daily round designed to finish in two minutes or less,
-then practise with optional hints.
+fictional habitat. A daily round is designed to reach its win or loss screen in
+two minutes or less. Then practise with optional hints.
 It supports keyboard, pointer, and touch input for one player.
 
 ## Play
